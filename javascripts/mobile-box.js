@@ -23,6 +23,12 @@
 				'<span class="mobileBoxTitle">{title}</span>',
 			'</div>',
 			'<img src="{src}" />',
+			'<div class="mobileBoxSlider">',
+				'<ul>',
+					'<li class="mobileBoxLeft"><a href="#">left</a></li>',
+					'<li class="mobileBoxRight"><a href="#">right</a></li>',
+				'</ul>',
+			'</div>',
 		'</div>'
 	].join('');
 
