@@ -11,8 +11,8 @@
 (function( $, document, window ){
 	'use strict';
 
-	var screenWidth  = $(window).width(),
-		screenHeight = $(window).height(),
+	var screenWidth  = $( window ).width( ),
+		screenHeight = $( window ).height( ),
 		layout       = 'landscape';
 
 	//template for mobileBox
@@ -29,36 +29,39 @@
 
 	$.fn.mobileBox = function( options ) {
 		
-		$(this).click(function(){
+		$( this ).click( function( ) {
 			
 			var dfd = $.Deferred();
 
-			var href    = $(this).attr('href'),
-				title   = $(this).attr('title'),
+			var href    = $( this ).attr( 'href' ),
+				title   = $( this ).attr( 'title' ),
 				img     = new Image();
 				img.src = href;
 
-			$(img).load(function(e){
+			$( img ).load( function( e ) {
 				var target = e.currentTarget;
-				if (target.width < target.height) {
+				if ( target.width < target.height ) {
 					layout = 'portrait';
 				}
+
 				dfd.resolve( target.width, target.height );
 			});
 
-			dfd.done(function(width, height){
-				template = template.replace('{src}', href ).replace('{title}', title);
+			dfd.done( function( width, height ){
+				template = template.replace('{src}', href ).replace( '{title}', title );
 				
 			
-				$('body').prepend(template);
-				$('.mobileBoxDone a').bind('click', closeBox );
+				$( 'body' ).prepend( template );
+				$( '.mobileBoxDone a' ).bind( 'click', closeBox );
 			});
 
+			//@TODO rather than return false, I should unbind
+			//to any mobileBox el prior to calling?
 			return false;	
 		});
 
-		var closeBox = function() {
-			$('.mobileBox').remove();
+		var closeBox = function( ) {
+			$( '.mobileBox' ).remove( );
 		};
 	};
 
