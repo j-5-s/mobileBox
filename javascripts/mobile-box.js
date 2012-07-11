@@ -18,6 +18,10 @@
 	//template for mobileBox
 	var template = [
 		'<div class="mobileBox">',
+			'<div class="mobileBoxHeader">',
+				'<span class="mobileBoxDone"><a href="#done">Done</a></span>',
+				'<span class="mobileBoxTitle">{title}</span>',
+			'</div>',
 			'<img src="{src}" />',
 		'</div>'
 	].join('');
@@ -29,8 +33,9 @@
 			
 			var dfd = $.Deferred();
 
-			var href = $(this).attr('href'),
-				img  = new Image();
+			var href    = $(this).attr('href'),
+				title   = $(this).attr('title'),
+				img     = new Image();
 				img.src = href;
 
 			$(img).load(function(e){
@@ -42,9 +47,19 @@
 			});
 
 			dfd.done(function(width, height){
-				console.log( width, height, layout );
+				template = template.replace('{src}', href ).replace('{title}', title);
+				
+			
+				$('body').prepend(template);
+				$('.mobileBoxDone a').bind('click', closeBox );
 			});
+
+			return false;	
 		});
+
+		var closeBox = function() {
+			$('.mobileBox').remove();
+		};
 	};
 
 
