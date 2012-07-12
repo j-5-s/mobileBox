@@ -1,3 +1,14 @@
+.mobileBoxBg {
+	position:absolute;
+	margin:0;
+	padding:0;
+	left:0;
+	top:0;
+	width:100%;
+	height:100%;
+	background:#000 url(images/header-gradient.png) repeat-x;;
+	opacity: 0.95;
+}
 .mobileBox {
 	position:absolute;
 	margin:0;
@@ -6,7 +17,6 @@
 	top:0;
 	width:100%;
 	height:100%;
-	background-color:#000;
 }
 .mobileBox img {
 	width:100%;
@@ -18,7 +28,7 @@
 	z-index:1000;
 	width:100%;
 	height:40px;
-	background: url(images/header-gradient.png) repeat-x;
+
 }
 
 .mobileBoxDone {
@@ -48,10 +58,6 @@
 	font-size: 18px;
 }
 
-.mobileBox img {
-	border-bottom:1px solid #FFF;
-}
-
 .mobileBoxSlider {
 	bottom:0;
 	width:100%;
@@ -59,33 +65,4 @@
 	color:#FFF;
 	z-index: 1001;
 
-}
-
-.mobileBoxSlider ul {
-	margin:0;
-	padding:0;
-}
-
-.mobileBoxSlider li {
-	width:46%;
-	text-align: center;
-	list-style-type:none;
-	margin:2%;
-}
-
-.mobileBoxSlider li a {
-	padding:35px 20px;
-	display:block;
-	color:#FFF;
-	text-decoration: none;
-	border:1px solid #FFF
-}
-
-.mobileBoxSlider .mobileBoxLeft {
-	float:left;
-
-}
-
-.mobileBoxSlider .mobileBoxRight {
-	float:right
 }
