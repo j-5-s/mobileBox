@@ -24,7 +24,6 @@
 					'<span class="mobileBoxDone"><a href="#done">Done</a></span>',
 					'<span class="mobileBoxTitle">{title}</span>',
 				'</div>',
-				
 			'</div>',
 		'<div>'
 	].join('');
@@ -34,15 +33,13 @@
 
 
 	$.fn.mobileBox = function( options ) {
-		var self = this;
 		
 		$( this ).addClass( '_mobileBox' );
 
 
 		$( this ).click( function( ) {
 
-			var dfd        = $.Deferred(),
-				href       = $( this ).attr( 'href' ),
+			var href       = $( this ).attr( 'href' ),
 				title      = $( this ).attr( 'title' ),
 				cssClasses = $( this ).attr( 'class' ).split(' '),
 				img        = new Image();
@@ -84,6 +81,7 @@
 				swiper( $( '.mobileBox' ), group, clickedElIndex );
 			});
 
+
 			//@TODO rather than return false, I should unbind
 			//to any mobileBox el prior to calling?
 			return false;
@@ -112,7 +110,7 @@
 				$(img).css({'margin-top': spacing +'px'} );
 
 				cb.call( img, target.width, target.height, spacing );
-			});			
+			});
 		};
 
 		/**
@@ -128,7 +126,7 @@
 		 * credits: https://gist.github.com/936253
 		 *          http://plugins.jquery.com/project/swipe
 		 *          http://ryanscherf.com/demos/swipe/
-		 * 
+		 *
 		 * @param el {jQuery} mobileBox template
 		 * @param group {Array} list of items
 		 * @param index {Integer} index of clicked element
@@ -138,10 +136,10 @@
 			var self = el;
 			
 			/**
-			 * when the user swipes, i should load the 
+			 * when the user swipes, i should load the
 			 * element from the group either
 			 * before or after the current index
-			 * @param increment {Integer} 
+			 * @param increment {Integer}
 			 *
 			 */
 			var loadNextImage = function( increment ) {
@@ -150,30 +148,51 @@
 					var newIndex  = index + increment,
 						$nextImage = $( group[ newIndex ] );
 
-					//change to slide	
-					$('.mobileBox img').remove();
+					//@TODO: update to calculate the speed
 
+					//move the old image out
+					$('.mobileBox img').animate({
+						left:  ( ( increment < 0 ) ? '+' : '-' ) + '=' + screenWidth
+					}, 200, function(){
+						$(this).remove();
+					});
+
+					//move the new image in
 					var img        = new Image();
 						img.src    = $nextImage.attr('href');
 
-					//load the next image					
-					getImageDimensions( img, function(){
+					//load the next image
+					getImageDimensions( img, function(width, height, spacing){
+						var animateObj = {};
+
+						if (increment > 0) {
+							$(this).css( {right:'-'+screenWidth + 'px'} );
+							animateObj.right = '0px';
+						} else {
+							$(this).css( {left:'-'+screenWidth + 'px'} );
+							animateObj.left = '0px';
+						}
 						$('.mobileBoxTitle').html( $nextImage.attr('title') );
+
 						$( '.mobileBox' ).append( this );
+						$(this).animate(animateObj, 200);
+
 					});
 
-					//alter the index 
+
+
+					//alter the index
 					index = index + increment;
 				}
 				
 			};
-			
+
 
 			var originalCoord = { 'x': 0, 'y': 0 },
 			    finalCoord = { 'x': 0, 'y': 0 },
 			    options = {
 					'threshold': {
-						'x': 5,
+						'x': 3,
 						'y': 10
 					},
 					'swipeLeft': function() {
