@@ -24,10 +24,13 @@
 					'<span class="mobileBoxDone"><a href="#done">Done</a></span>',
 					'<span class="mobileBoxTitle">{title}</span>',
 				'</div>',
-				'<img src="{src}" />',
+				
 			'</div>',
 		'<div>'
 	].join('');
+
+
+
 
 
 	$.fn.mobileBox = function( options ) {
@@ -45,6 +48,8 @@
 				img        = new Image();
 				img.src    = href;
 
+
+			//Handle grouping information
 			var group = [];
 			//need to bind to all items with the same class
 			for ( var i = 0; i < cssClasses.length; i++ ){
@@ -61,36 +66,22 @@
 					}
 				}
 			}
+			var clickedElIndex = $(group).index(this);
+			//end groups
 
+			//image is ready, load the ui for the first time
+			getImageDimensions( img, function( width, height, spacing ){
+				//generate the template
+				var $template = $(template.replace('{src}', href ).replace( '{title}', title ));
 
-
-			//load the image being clicked
-			$( img ).load( function( e ) {
-				var target = e.currentTarget;
-				if ( target.width < target.height ) {
-					layout = 'portrait';
-				}
-
-				dfd.resolve( target.width, target.height );
-			});
-
-
-			//image is ready, load the ui
-			dfd.done( function( width, height ){
-				template = template.replace('{src}', href ).replace( '{title}', title );
-			
-				$( 'body' ).prepend( template );
-
-				var spacing = screenHeight - height;
-
-				//spacing must be greater than/equal 0 or set it to zero
-				spacing = (spacing >= 0) ? ((spacing/4) + 30) : 0;
-
-				$( '.mobileBox img' ).css( {'margin-top': +'px'} );
-				$( '.mobileBoxDone a' ).bind( 'click', closeBox );
-
+				//append the first image
+				$('.mobileBox', $template).append( this );
+				//attach the close box button
+				$( '.mobileBoxDone a', $template ).bind( 'click', closeBox );
+				//add the template
+				$( 'body' ).prepend( $template );
 				//bind to the swiping gestures
-				swiper( $( '.mobileBox' ) );
+				swiper( $( '.mobileBox' ), group, clickedElIndex );
 			});
 
 			//@TODO rather than return false, I should unbind
@@ -98,11 +89,38 @@
 			return false;
 		});
 
+
+		/**
+		 * Gets the image dimensions prior to it being loaded to the screen
+		 * Also applies css to the image to make it fit properly
+		 * @param img {Image}
+		 * @param cb {Function} image callback(width, height, spacing)
+		 * has the context of the image
+		 */
+		var getImageDimensions = function( img, cb ) {
+			//load the image being clicked
+			$( img ).load( function( e ) {
+				var target = e.currentTarget;
+				if ( target.width < target.height ) {
+					layout = 'portrait';
+				}
+
+				var spacing = screenHeight - target.height;
+
+				//spacing must be greater than/equal 0 or set it to zero
+				spacing = (spacing >= 0) ? ((spacing/4) + 30) : 0;
+				$(img).css({'margin-top': spacing +'px'} );
+
+				cb.call( img, target.width, target.height, spacing );
+			});			
+		};
+
 		/**
 		 * function to close the slideshow
 		 */
 		var closeBox = function( ) {
 			$( '.mobileBoxWrapper' ).remove( );
+			return false;
 		};
 
 		/**
@@ -110,10 +128,47 @@
 		 * credits: https://gist.github.com/936253
 		 *          http://plugins.jquery.com/project/swipe
 		 *          http://ryanscherf.com/demos/swipe/
+		 * 
+		 * @param el {jQuery} mobileBox template
+		 * @param group {Array} list of items
+		 * @param index {Integer} index of clicked element
 		 */
-		var swiper = function( el ) {
+		var swiper = function( el, group, index ) {
+			
 			var self = el;
-		
+			
+			/**
+			 * when the user swipes, i should load the 
+			 * element from the group either
+			 * before or after the current index
+			 * @param increment {Integer} 
+			 *
+			 */
+			var loadNextImage = function( increment ) {
+				
+				if (index + increment >= 0 && index + increment < group.length) {
+					var newIndex  = index + increment,
+						$nextImage = $( group[ newIndex ] );
+
+					//change to slide	
+					$('.mobileBox img').remove();
+
+					var img        = new Image();
+						img.src    = $nextImage.attr('href');
+
+					//load the next image					
+					getImageDimensions( img, function(){
+						$('.mobileBoxTitle').html( $nextImage.attr('title') );
+						$( '.mobileBox' ).append( this );
+					});
+
+					//alter the index 
+					index = index + increment;
+				}
+				
+			};
+			
+
 			var originalCoord = { 'x': 0, 'y': 0 },
 			    finalCoord = { 'x': 0, 'y': 0 },
 			    options = {
@@ -123,11 +178,11 @@
 					},
 					'swipeLeft': function() {
 						//slide image left
-						alert('swiped left');
+						loadNextImage(1);
 					},
 					'swipeRight': function() {
 						//slide image right
-						alert('swiped right');
+						loadNextImage(-1);
 					}
 			    };
 
