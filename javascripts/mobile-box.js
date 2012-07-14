@@ -33,15 +33,38 @@
 	$.fn.mobileBox = function( options ) {
 		var self = this;
 		
+		$( this ).addClass( '_mobileBox' );
+
+
 		$( this ).click( function( ) {
-			
-			var dfd = $.Deferred();
 
-			var href    = $( this ).attr( 'href' ),
-				title   = $( this ).attr( 'title' ),
-				img     = new Image();
-				img.src = href;
+			var dfd        = $.Deferred(),
+				href       = $( this ).attr( 'href' ),
+				title      = $( this ).attr( 'title' ),
+				cssClasses = $( this ).attr( 'class' ).split(' '),
+				img        = new Image();
+				img.src    = href;
 
+			var group = [];
+			//need to bind to all items with the same class
+			for ( var i = 0; i < cssClasses.length; i++ ){
+				var klass = cssClasses[i];
+				if ( klass === '_mobileBox' ) {
+					continue;
+				}
+				
+				var klasses = $( '.' + klass);
+				for ( var n = 0; n < klasses.length; n++ ){
+					var el = klasses[n];
+					if (group.indexOf(el) === -1) {
+						group.push(el);
+					}
+				}
+			}
+
+
+
+			//load the image being clicked
 			$( img ).load( function( e ) {
 				var target = e.currentTarget;
 				if ( target.width < target.height ) {
@@ -52,19 +75,20 @@
 			});
 
 
-
+			//image is ready, load the ui
 			dfd.done( function( width, height ){
 				template = template.replace('{src}', href ).replace( '{title}', title );
-				
 			
 				$( 'body' ).prepend( template );
 
 				var spacing = screenHeight - height;
+
 				//spacing must be greater than/equal 0 or set it to zero
 				spacing = (spacing >= 0) ? ((spacing/4) + 30) : 0;
 
-				$( '.mobileBox img' ).css({'margin-top': +'px'});
+				$( '.mobileBox img' ).css( {'margin-top': +'px'} );
 				$( '.mobileBoxDone a' ).bind( 'click', closeBox );
+
 				//bind to the swiping gestures
 				swiper( $( '.mobileBox' ) );
 			});
