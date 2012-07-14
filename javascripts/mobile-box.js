@@ -1,10 +1,7 @@
 //#Todo
-// * Determine the height and width of the mobie app
 // * Determine if it is a mobile smartphone device
-// * Create clean looking UI
-//    * Top nav
-//    * bottom nav
-// * Swipe / gestures (optional, relies on )
+// * Add options
+//     * fadeout
 
 
 /*global jQuery:true, Image, document */
@@ -29,8 +26,16 @@
 		'<div>'
 	].join('');
 
-	$.fn.mobileBox = function( options ) {
+	$.fn.mobileBox = function( params ) {
 		
+		var options = {
+			counter: ' of '
+		};
+
+		$.extend( options, params );
+
+
+
 		$( this ).addClass( '_mobileBox' );
 
 
@@ -66,7 +71,7 @@
 			//image is ready, load the ui for the first time
 			getImageDimensions( img, function( width, height, spacing ){
 				
-				var c = (group.length) ? ( ( clickedElIndex + 1 ) + ' of ' + group.length ) : '1 of 1';
+				var c = (group.length) ? ( ( clickedElIndex + 1 ) + options.counter + group.length ) : '1 of 1';
 
 				//generate the template
 				var $template = $( template.replace('{src}', href )
