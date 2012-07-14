@@ -22,15 +22,12 @@
 			'<div class="mobileBox">',
 				'<div class="mobileBoxHeader">',
 					'<span class="mobileBoxDone"><a href="#done">Done</a></span>',
-					'<span class="mobileBoxTitle">{title}</span>',
+					'<span class="mobileBoxCounter">{counter}</span>',
 				'</div>',
+				'<div class="mobileBoxTitle">{title}</div>',
 			'</div>',
 		'<div>'
 	].join('');
-
-
-
-
 
 	$.fn.mobileBox = function( options ) {
 		
@@ -68,8 +65,14 @@
 
 			//image is ready, load the ui for the first time
 			getImageDimensions( img, function( width, height, spacing ){
+				
+				var c = (group.length) ? ( ( clickedElIndex + 1 ) + ' of ' + group.length ) : '1 of 1';
+
 				//generate the template
-				var $template = $(template.replace('{src}', href ).replace( '{title}', title ));
+				var $template = $( template.replace('{src}', href )
+					.replace( '{title}', title )
+					.replace('{counter}', c)
+				);
 
 				//append the first image
 				$('.mobileBox', $template).append( this );
@@ -77,6 +80,7 @@
 				$( '.mobileBoxDone a', $template ).bind( 'click', closeBox );
 				//add the template
 				$( 'body' ).prepend( $template );
+
 				//bind to the swiping gestures
 				swiper( $( '.mobileBox' ), group, clickedElIndex );
 			});
@@ -117,7 +121,11 @@
 		 * function to close the slideshow
 		 */
 		var closeBox = function( ) {
-			$( '.mobileBoxWrapper' ).remove( );
+			$( '.mobileBoxWrapper' ).fadeOut( function() {
+				$(this).remove();
+			});
+
+
 			return false;
 		};
 
@@ -173,7 +181,7 @@
 							animateObj.left = '0px';
 						}
 						$('.mobileBoxTitle').html( $nextImage.attr('title') );
-
+						$('.mobileBoxCounter').html( (newIndex+1) + ' of ' + group.length );
 						$( '.mobileBox' ).append( this );
 						$(this).animate(animateObj, 200);
 
@@ -187,6 +195,9 @@
 				
 			};
 
+			window.load = loadNextImage;
+
+//			loadNextImage(-1)
 
 			var originalCoord = { 'x': 0, 'y': 0 },
 			    finalCoord = { 'x': 0, 'y': 0 },
