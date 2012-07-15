@@ -54,9 +54,9 @@
 
 
 			//first, check that its a screen size smaller than
-			//480 or users option value and the browswer
+			//480 or users option value and the browser
 			//has access to `event.originalEvent.targetTouches`
-			if ( ! options.isTouch ) {
+			if ( screenWidth > 480 || !options.isTouch ) {
 				//not gonna run mobileBox
 				return;
 			}

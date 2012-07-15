@@ -1,4 +1,4 @@
 $(function(){
 	$('a').colorbox();
-	$('a').mobileBox({isTouch:true});
+	$('a').mobileBox();
 });
