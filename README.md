@@ -36,7 +36,7 @@ $('.someClassName').mobileBox();
   the defauly 480, specify a size here in px.
 
 ##Example
-View the <a href="http://108.227.65.206/mobile-box/example/">demo</a> on a mobile 
+View the <a href="http://108.227.65.206/mobileBox/example/">demo</a> on a mobile 
 phone. If your not on a mobile device you should get colorbox rather than mobileBox.
 
 <img src="https://github.com/jamescharlesworth/mobileBox/raw/master/example/media/demo.png" />
