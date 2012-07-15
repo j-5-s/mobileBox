@@ -145,17 +145,18 @@
 				}
 
 				var spacing = screenHeight - target.height;
-				
+
+				spacing = (spacing >= 0) ? ((spacing/4)) : 0;
 				//need to set the css width so it does not stretch
 				if ( target.width < screenWidth ) {
 					$(img).css({width: target.width + 'px'});
 					//also, need to center the image
 					var horizontal_spacing = (screenWidth - target.width) / 2;
 					$(img).css({'margin-left': horizontal_spacing + 'px'});
+				} else {
+					spacing += 35;
 				}
-
-				//spacing must be greater than/equal 0 or set it to zero
-				spacing = (spacing >= 0) ? ((spacing/4) + 30) : 0;
+				
 				$(img).css({'margin-top': spacing +'px'} );
 
 				cb.call( img, target.width, target.height, spacing );
@@ -216,14 +217,20 @@
 
 					//load the next image
 					getImageDimensions( img, function(width, height, spacing){
-						var animateObj = {};
+						var animateObj         = {},
+							horizontal_spacing = 0;
+
+						//calculate the horizontal spacing if the image is less than the width
+						if ( width < screenWidth ) {
+							horizontal_spacing = (screenWidth - width) / 2;
+						}
 
 						if (increment > 0) {
 							$(this).css( {right:'-'+screenWidth + 'px'} );
-							animateObj.right = '0px';
+							animateObj.right = horizontal_spacing + 'px';
 						} else {
 							$(this).css( {left:'-'+screenWidth + 'px'} );
-							animateObj.left = '0px';
+							animateObj.left = horizontal_spacing + 'px';
 						}
 						$('.mobileBoxTitle').html( $nextImage.attr('title') );
 						$('.mobileBoxCounter').html( (newIndex+1) + ' of ' + group.length );
