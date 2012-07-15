@@ -11,11 +11,30 @@ single image or gallery with a similar api to
 [colorbox](http://www.jacklmoore.com/colorbox)
 
 ## Install
-Currently not in npm. Use git
-<pre>
-cd node_modules
-git clone https://github.com/jamescharlesworth/intrade.git
-</pre>	
+Include the CSS file, image directory, and js file in the &lt;HEAD&gt;
+```html
+  <link rel="stylesheet" href="path/to/mobileBox/style/mobileBox-min.css">
+  <script type="text/javascript" src="javascripts/jquery.mobile-box-min.js"></script>
+```
+Then bind to the image link in the same way most other lightbox's work:
+```html
+<a class="someClassName" title="Image Title To Be In The Description" href="path/to/image.jpeg">text or image</a>
+```
+
+```javascript
+$('.someClassName').mobileBox();
+```
+.mobileBox has several optional paramters:
+* counter {String}. The counter in the title bar. Defaults to `{i} of {t}`
+  `{i}` gets replaced with the index and {t} is the total number of images
+  in the group or 1 if no group
+* isTouch {Boolean} for development purposes I needed a way to force touch
+  device. The mobileBox does not run when run in Chrome, but if you set
+  this parameter to true and the browser size is smaller that 480, it works.
+* disableWithMaxWidth {Integer} also mainly used for testing, but if you
+  want mobileBox to fire with devices that have a screensize greater than
+  the defauly 480, specify a size here in px.
+
 
 ## License 
 
