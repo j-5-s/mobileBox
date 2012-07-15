@@ -28,7 +28,7 @@
 		var options = {
 			counter: '{i} of {t}',
 			isTouch: 'ontouchstart' in document.documentElement,
-			disableWithMaxWidth: 480
+	
 		};
 		
 
@@ -41,12 +41,23 @@
 
 
 		$( this ).click( function( e ) {
+			
+			//var viewport = document.querySelector("meta[name=viewport]");
+			//viewport.setAttribute('content', 'width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;');
+			if (!$('#mobileBoxViewport').length) {
+				$('head').append('<meta name="viewport" id="mobileBoxViewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />');	
+			} else {
+				$('#mobileBoxViewport').attr('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;');
+			}
+			
+			screenHeight = window.innerHeight;
+			screenWidth = window.innerWidth;
 
 
 			//first, check that its a screen size smaller than
 			//480 or users option value and the browswer
 			//has access to `event.originalEvent.targetTouches`
-			if ( screenWidth > options.disableWithMaxWidth || ! options.isTouch ) {
+			if ( ! options.isTouch ) {
 				//not gonna run mobileBox
 				return;
 			}
@@ -110,8 +121,8 @@
 			return false;
 		});
 
-		var screenWidth  = $( window ).width( ),
-			screenHeight = $( window ).height( ),
+		var screenWidth  = 0,
+			screenHeight = 0,
 			layout       = 'landscape';
 
 		//template for mobileBox
@@ -144,22 +155,28 @@
 					layout = 'portrait';
 				}
 
-				var spacing = screenHeight - target.height;
+				var vertical_spacing = screenHeight - target.height;
 
-				spacing = (spacing >= 0) ? ((spacing/4)) : 0;
-				//need to set the css width so it does not stretch
+
+ 				vertical_spacing = (vertical_spacing >= 0) ? ((vertical_spacing/4)) : 0;
+ 				
+ 				//need to set the css width so it does not stretch
 				if ( target.width < screenWidth ) {
-					$(img).css({width: target.width + 'px'});
-					//also, need to center the image
-					var horizontal_spacing = (screenWidth - target.width) / 2;
-					$(img).css({'margin-left': horizontal_spacing + 'px'});
-				} else {
-					spacing += 35;
-				}
 				
-				$(img).css({'margin-top': spacing +'px'} );
+ 					$(img).css({width: target.width + 'px'});
 
-				cb.call( img, target.width, target.height, spacing );
+ 					//also, need to center the image
+ 					var horizontal_spacing = (screenWidth - target.width) / 2;
+					$(img).css({'margin-left':'0px'});
+				}
+
+				if (target.height > target.width && target.height > screenHeight) {
+					$(img).css({width:'auto', height: (screenHeight-100)+'px'})
+				}
+ 				
+				$(img).css({'margin-top': vertical_spacing +'px'} );
+
+				cb.call( img, target.width, target.height, vertical_spacing );
 			});
 		};
 
@@ -168,7 +185,12 @@
 		 */
 		var closeBox = function( ) {
 			$( '.mobileBoxWrapper' ).fadeOut( function() {
-				$(this).remove();
+				//update later to fix viewport changing back to normal
+				//without the window.location hack
+				window.location = window.location;
+				//$(this).remove();
+				//$('#mobileBoxViewport').attr('content', 'width='+document.documentElement.scrollWidth +',  user-scalable=yes;' );
+
 			});
 
 
@@ -227,10 +249,10 @@
 
 						if (increment > 0) {
 							$(this).css( {right:'-'+screenWidth + 'px'} );
-							animateObj.right = horizontal_spacing + 'px';
+							animateObj.right = '0px';
 						} else {
 							$(this).css( {left:'-'+screenWidth + 'px'} );
-							animateObj.left = horizontal_spacing + 'px';
+							animateObj.left = '0px';
 						}
 						$('.mobileBoxTitle').html( $nextImage.attr('title') );
 						$('.mobileBoxCounter').html( (newIndex+1) + ' of ' + group.length );
@@ -251,8 +273,8 @@
 			    finalCoord = { 'x': 0, 'y': 0 },
 			    options = {
 					'threshold': {
-						'x': 3,
-						'y': 10
+						'x': 10,
+						'y': 100
 					},
 					'swipeLeft': function() {
 						//slide image left
