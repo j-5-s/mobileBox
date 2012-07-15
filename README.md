@@ -36,7 +36,7 @@ $('.someClassName').mobileBox();
   the defauly 480, specify a size here in px.
 
 ##Example
-<img src="lib/media/demo.png" />
+<img src="raw/master/lib/media/demo.png" />
 
 ## License 
 
