@@ -35,6 +35,8 @@ $('.someClassName').mobileBox();
   want mobileBox to fire with devices that have a screensize greater than
   the defauly 480, specify a size here in px.
 
+##Example
+<img src="lib/media/demo.png" />
 
 ## License 
 
