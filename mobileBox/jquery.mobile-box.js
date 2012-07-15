@@ -1,5 +1,9 @@
-/*global jQuery:true, Image, document */
+// mobileBox - jQuery lightbox for mobile plugin
+// (c) 2012 James Charlesworth - JamesCharlesworth.com
+// License: http://www.opensource.org/licenses/mit-license.php
+
 (function( $, document, window ){
+/*global jQuery:true, Image, document */
 	'use strict';
 
 	/**
@@ -34,18 +38,13 @@
 
 		$.extend( options, params );
 
-	
-
-
 		$( this ).addClass( '_mobileBox' );
-
 
 		$( this ).click( function( e ) {
 			
-			//var viewport = document.querySelector("meta[name=viewport]");
-			//viewport.setAttribute('content', 'width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;');
+
 			if (!$('#mobileBoxViewport').length) {
-				$('head').append('<meta name="viewport" id="mobileBoxViewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />');	
+				$('head').append('<meta name="viewport" id="mobileBoxViewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />');
 			} else {
 				$('#mobileBoxViewport').attr('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;');
 			}
@@ -158,22 +157,23 @@
 				var vertical_spacing = screenHeight - target.height;
 
 
- 				vertical_spacing = (vertical_spacing >= 0) ? ((vertical_spacing/4)) : 0;
- 				
- 				//need to set the css width so it does not stretch
+				vertical_spacing = (vertical_spacing >= 0) ? ((vertical_spacing/4)) : 0;
+					
+				//need to set the css width so it does not stretch
 				if ( target.width < screenWidth ) {
-				
- 					$(img).css({width: target.width + 'px'});
-
- 					//also, need to center the image
- 					var horizontal_spacing = (screenWidth - target.width) / 2;
-					$(img).css({'margin-left':'0px'});
+					$(img).css({width: target.width + 'px'});
 				}
 
 				if (target.height > target.width && target.height > screenHeight) {
-					$(img).css({width:'auto', height: (screenHeight-100)+'px'})
+					$(img).css({width:'auto', height: (screenHeight-100)+'px'});
+					//calc the spacing
+					var r = target.width/ target.height,
+						s = (r * (screenHeight) ) / 2;
+
+					$(img).css({'left':s + 'px'});
+
 				}
- 				
+
 				$(img).css({'margin-top': vertical_spacing +'px'} );
 
 				cb.call( img, target.width, target.height, vertical_spacing );
@@ -244,15 +244,16 @@
 
 						//calculate the horizontal spacing if the image is less than the width
 						if ( width < screenWidth ) {
-							horizontal_spacing = (screenWidth - width) / 2;
+							var r = width / height;
+							horizontal_spacing = (r * (screenHeight) ) / 2;
 						}
 
 						if (increment > 0) {
 							$(this).css( {right:'-'+screenWidth + 'px'} );
-							animateObj.right = '0px';
+							animateObj.right = horizontal_spacing + 'px';
 						} else {
 							$(this).css( {left:'-'+screenWidth + 'px'} );
-							animateObj.left = '0px';
+							animateObj.left = horizontal_spacing+'px';
 						}
 						$('.mobileBoxTitle').html( $nextImage.attr('title') );
 						$('.mobileBoxCounter').html( (newIndex+1) + ' of ' + group.length );
