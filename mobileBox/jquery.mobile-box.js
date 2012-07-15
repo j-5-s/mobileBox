@@ -19,9 +19,9 @@
 	 *    * isTouch {Boolean} for development purposes I needed a way to force touch
 	 *      device. The mobileBox does not run when run in Chrome, but if you set
 	 *      this parameter to true and the browser size is smaller that 480, it works.
-     *    * disableWithMaxWidth {Integer} also mainly used for testing, but if you
-     *      want mobileBox to fire with devices that have a screensize greater than
-     *      the defauly 480, specify a size here in px
+	 *    * disableWithMaxWidth {Integer} also mainly used for testing, but if you
+	 *      want mobileBox to fire with devices that have a screensize greater than
+	 *      the defauly 480, specify a size here in px
 	 */
 	$.fn.mobileBox = function( params ) {
 
@@ -231,10 +231,6 @@
 				}
 				
 			};
-
-			window.load = loadNextImage;
-
-//			loadNextImage(-1)
 
 			var originalCoord = { 'x': 0, 'y': 0 },
 			    finalCoord = { 'x': 0, 'y': 0 },
